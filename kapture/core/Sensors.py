@@ -24,7 +24,7 @@ class Sensor:
         """
         :return: sensor type as string
         """
-        return self._sensor_type
+        pass
 
     def __repr__(self) -> str:
         representation = ''
@@ -191,19 +191,14 @@ class Camera(Sensor):
         """
         :return: the camera type
         """
-        if self.sensor_params is None:
-            raise ValueError('sensor_params should not be None for a camera')
-        return CameraType[self.sensor_params[0]]
+        pass
 
     @property
     def camera_params(self) -> List[float]:
         """
         :return: camera parameters
         """
-        if self.sensor_params is None:
-            raise ValueError('sensor_params should not be None for a camera')
-        num_params = CAMERA_TYPE_PARAMS_COUNT[self.camera_type]
-        return [float(c) for c in self.sensor_params[1:(1+num_params)]]
+        pass
 
 
 def create_sensor(sensor_type: str, sensor_params: Optional[list] = None, name: Optional[str] = None):

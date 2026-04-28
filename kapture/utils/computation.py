@@ -11,10 +11,4 @@ def num_digits(n) -> int:
 
     :return: number of digits
     """
-    if not isinstance(n, int):
-        raise TypeError(f'Invalid n: not an integer {n}')
-    count = 1
-    while (int(n / 10)) != 0:
-        count += 1
-        n = int(n / 10)
-    return count
+    pass

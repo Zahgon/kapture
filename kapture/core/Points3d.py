@@ -73,7 +73,7 @@ class Points3d(np.ndarray):
         """
         Check for the presence of the colors columns
         """
-        return self.shape[1] == Points3d.XYZ_RGB
+        pass
 
     def as_array(self):
         """ cast the Points3d to numpy array. """

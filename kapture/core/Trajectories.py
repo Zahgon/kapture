@@ -113,14 +113,7 @@ class Trajectories(Dict[int, Dict[str, PoseTransform]]):
         """
         Get the list of timestamps is ascending sorted order
         """
-        if len(self._timestamps_sorted_list) == 0:
-            # Need to sort
-            self._timestamps_sorted_list = sorted(list(self.keys()))
-            if len(self._timestamps_sorted_list) > 0:
-                self._first_timestamp = self._timestamps_sorted_list[0]
-                if len(self._timestamps_sorted_list) > 1:
-                    self._last_timestamp = self._timestamps_sorted_list[-1]
-        return self._timestamps_sorted_list
+        pass
 
     def timestamp_length(self) -> int:
         """
@@ -128,14 +121,7 @@ class Trajectories(Dict[int, Dict[str, PoseTransform]]):
 
         :return: Length of the timestamps as a positive integer, or -1 if it is variable
         """
-        timestamps = self.timestamps_sorted_list()
-        base_length = computation.num_digits(timestamps[0]) if len(timestamps) > 0 else -1
-        indexes = [1, 2, 3, 4, 5, -1, -2, -3, -4] if len(timestamps) > 10 else list(range(1, len(timestamps)))
-        for n in indexes:
-            length = computation.num_digits(timestamps[n])
-            if length != base_length:
-                return -1
-        return base_length
+        pass
 
     def key_pairs(self) -> List[Tuple[int, str]]:
         """
@@ -154,11 +140,7 @@ class Trajectories(Dict[int, Dict[str, PoseTransform]]):
         """
         :return: the set of unique sensors identifiers in the trajectories
         """
-        return set(
-            sensor_id
-            for timestamp, sensors in self.items()
-            for sensor_id in sensors.keys()
-        )
+        pass
 
     def __contains__(self, key: Union[int, Tuple[int, str]]):
         if isinstance(key, tuple):
@@ -196,51 +178,7 @@ class Trajectories(Dict[int, Dict[str, PoseTransform]]):
         :param max_interval: max interval between the given timestamp and the trajectory timestamps.
         :return: a compute 6D pose if found, None otherwise
         """
-        if not isinstance(timestamp, int):
-            raise TypeError('invalid timestamp')
-        if not isinstance(device_id, str):
-            raise TypeError('invalid device_id')
-        # In case the pose already exist: just return it
-        if self.__contains__(timestamp) and self.__getitem__(timestamp).__contains__(device_id):
-            return self.__getitem__(timestamp).__getitem__(device_id)
-        timestamps_with_poses_list = self.timestamps_sorted_list()
-        # Check if the pose is out of bounds
-        if timestamp <= self._first_timestamp or timestamp >= self._last_timestamp:
-            return None
-        # Find closest timestamps before and after
-        next_position = bisect_left(timestamps_with_poses_list, timestamp)
-        low_position = next_position - 1
-        previous_ts = timestamps_with_poses_list[low_position]
-        next_ts = timestamps_with_poses_list[next_position]
-        # We should have found the two closest timestamps
-        # Check there is a pose in the time interval for the device
-        while timestamp - previous_ts <= max_interval and not self.__getitem__(previous_ts).__contains__(device_id):
-            # Search backward for a timestamp with this device
-            low_position -= 1
-            if low_position >= 0:
-                previous_ts = timestamps_with_poses_list[low_position]
-            else:
-                # We have reached the begin of the list without solution
-                return None
-        # Check the interval for the previous timestamp
-        if timestamp - previous_ts > max_interval:
-            # We are to far in the past
-            return None
-        while next_ts - timestamp <= max_interval and not self.__getitem__(next_ts).__contains__(device_id):
-            # Search backward for a timestamp with this device
-            next_position += 1
-            if next_position < len(timestamps_with_poses_list):
-                next_ts = timestamps_with_poses_list[next_position]
-            else:
-                # We have reached the end of the list without solution
-                return None
-        # Check the interval for the next timestamp
-        if next_ts - timestamp > max_interval:
-            # We are to far in the future
-            return None
-        previous_pose = self.__getitem__(previous_ts).__getitem__(device_id)
-        next_pose = self.__getitem__(next_ts).__getitem__(device_id)
-        return compute_intermediate_pose(timestamp, previous_ts, previous_pose, next_ts, next_pose)
+        pass
 
     def inverse(self) -> 'Trajectories':
         """ :return: new trajectories with all pose inverted """
@@ -397,12 +335,7 @@ def compute_intermediate_pose(timestamp: int,
     :param up_p: the second pose
     :return: the computed pose
     """
-    rotation = quaternion.slerp(low_p.r, up_p.r, low_ts, up_ts, timestamp)
-    # translation = t0 + (ts-ts0)/(ts1-ts0) * (t1 - t0)
-    translation = [low_p.t[0] + (timestamp - low_ts) / (up_ts - low_ts) * (up_p.t[0] - low_p.t[0]),
-                   low_p.t[1] + (timestamp - low_ts) / (up_ts - low_ts) * (up_p.t[1] - low_p.t[1]),
-                   low_p.t[2] + (timestamp - low_ts) / (up_ts - low_ts) * (up_p.t[2] - low_p.t[2])]
-    return PoseTransform(rotation, translation)
+    pass
 
 
 def trajectory_transform_inplace(

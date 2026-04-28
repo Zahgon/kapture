@@ -134,10 +134,7 @@ def merge_keypoints(feature_type: str,
     :param tar_handlers: collection of preloaded tar archives
     :return: merged keypoints
     """
-    keypoints = _merge_image_features(kapture.Keypoints, feature_type, keypoints_list, keypoints_paths,
-                                      output_path, tar_handlers)
-    assert isinstance(keypoints, kapture.Keypoints)
-    return keypoints
+    pass
 
 
 def merge_keypoints_collections(keypoints_collections_list: List[Optional[Dict[str, kapture.Keypoints]]],
@@ -170,10 +167,7 @@ def merge_descriptors(feature_type: str,
     :param tar_handlers: collection of preloaded tar archives
     :return: merged descriptors
     """
-    descriptors = _merge_image_features(kapture.Descriptors, feature_type,
-                                        descriptors_list, descriptors_paths, output_path, tar_handlers)
-    assert isinstance(descriptors, kapture.Descriptors)
-    return descriptors
+    pass
 
 
 def merge_descriptors_collections(descriptors_collections_list: List[Optional[Dict[str, kapture.Descriptors]]],
@@ -205,10 +199,7 @@ def merge_global_features(global_features_list: List[Optional[kapture.GlobalFeat
     :param tar_handlers: collection of preloaded tar archives
     :return: merged global features
     """
-    features = _merge_image_features(kapture.GlobalFeatures, global_features_list, global_features_paths,
-                                     output_path, tar_handlers)
-    assert isinstance(features, kapture.GlobalFeatures)
-    return features
+    pass
 
 
 def merge_global_features_collections(global_features_collections_list: List[Optional[Dict[str,

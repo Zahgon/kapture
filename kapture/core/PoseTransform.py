@@ -29,7 +29,7 @@ class PoseTransform:
 
         # quaternion
         if isinstance(r, quaternion.quaternion):
-            # already a quaternion : copy aziz (lumière)
+            # already a quaternion : copy aziz (lumiÃ¨re)
             self._r = r
         elif isinstance(r, (list, np.ndarray, np.generic)):
             # its a list or numpy => convert to quaternion if valid
@@ -44,7 +44,7 @@ class PoseTransform:
 
         # translation
         if isinstance(t, (np.ndarray, np.generic)):
-            #  numpy : copy aziz lumière
+            #  numpy : copy aziz lumiÃ¨re
             self._t = t
         elif isinstance(t, list):
             # its a list: convert to numpy if valid
@@ -67,28 +67,28 @@ class PoseTransform:
         """
         :return: rotation as quaternion
         """
-        return self._r
+        pass
 
     @property
     def r_raw(self) -> Optional[List[float]]:
         """
         :return: rotation as list of float
         """
-        return quaternion.as_float_array(self._r).tolist() if self._r is not None else None
+        pass
 
     @property
     def t(self):
         """
         :return: translation as numpy ndarray
         """
-        return self._t
+        pass
 
     @property
     def t_raw(self) -> Optional[List[float]]:
         """
         :return: translation as list of float
         """
-        return self._t.flatten().tolist() if self._t is not None else None
+        pass
 
     def inverse(self) -> 'PoseTransform':
         """
@@ -148,18 +148,7 @@ class PoseTransform:
         :param points3d: input 3d points, stored row wise (one point per row)
         :return: another array with the 3d points transformed using the PoseTransform.
         """
-        assert self._r is not None
-        assert self._t is not None
-        assert isinstance(points3d, np.ndarray)
-
-        if points3d.shape[1] == 6:  # expunge RGB
-            points3d = points3d[:, 0:3]
-        points3d = points3d.transpose()
-        rotation_matrix = np.empty((3, 3), dtype=float)
-        rotation_as_np = np.array([self.r.w, self.r.x, self.r.y, self.r.z])
-        _as_rotation_matrix_njit(rotation_as_np, rotation_matrix)
-        points3d = np.add(np.matmul(rotation_matrix, points3d), self.t)
-        return points3d.transpose()
+        pass
 
     def __repr__(self) -> str:
         return 'r:{},  t:{}'.format(self.r_raw, self.t_raw)

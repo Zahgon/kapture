@@ -50,14 +50,7 @@ def get_axis_in_world(
     :param length: distance between each axis point and center.
     :return: 4 points (center, x, y, z) arranged by cols
     """
-    assert (isinstance(pose_device_from_world, kapture.PoseTransform))
-    sensor_axis = np.array([
-        [0, 0, 0],  # 0
-        [length, 0, 0],  # X
-        [0, length, 0],  # Y
-        [0, 0, length],  # Z
-    ], dtype=float)
-    return pose_device_from_world.inverse().transform_points(sensor_axis)
+    pass
 
 
 def header_to_ply_stream(stream, nb_vertex: int = 0, nb_edges: int = 0) -> None:
@@ -68,9 +61,7 @@ def header_to_ply_stream(stream, nb_vertex: int = 0, nb_edges: int = 0) -> None:
     :param nb_vertex: number of vertex
     :param nb_edges: number of edges
     """
-    stream.write(PLY_HEADER_TEMPLATE.format(nb_vertex=nb_vertex,
-                                            nb_edges=nb_edges))
-    stream.write(kapture_linesep)
+    pass
 
 
 def rig_to_ply_stream(stream, rig: Dict[str, kapture.PoseTransform], axis_length: float = 1.) -> None:
@@ -81,31 +72,7 @@ def rig_to_ply_stream(stream, rig: Dict[str, kapture.PoseTransform], axis_length
     :param rig: rig to write
     :param axis_length: length of the axis
     """
-    device_list = [(cam_id, pose_tr)
-                   for cam_id, pose_tr in rig.items()]
-
-    # add the rig center in devices
-    device_list = [(-1, kapture.PoseTransform())] + device_list
-
-    # create 4 points per device: 1 for center, 3 for axis
-    points_colored_list = []
-    edges_list = []
-    for cam_id, pose_tr in device_list:
-        axis = get_axis_in_world(pose_tr, axis_length)
-        edges_list += [(0, len(points_colored_list))]
-        points_colored_list += [p + AXIS_COLORS[i] for i, p in enumerate(axis.tolist())]
-
-    # write points into ply
-    header_to_ply_stream(stream,
-                         nb_vertex=len(points_colored_list),
-                         nb_edges=len(edges_list))
-    for p3d in points_colored_list:
-        line = ['{:<25}'.format(i) for i in p3d[0:3]]
-        line += ['{:03}'.format(int(i)) for i in p3d[3:6]]
-        stream.write(' '.join(line) + kapture_linesep)
-    for e in edges_list:
-        line = ['{:2}'.format(i) for i in e]
-        stream.write(' '.join(line) + kapture_linesep)
+    pass
 
 
 def rig_to_ply(filepath: str, rig: Dict[str, kapture.PoseTransform], axis_length: float = 1.) -> None:
@@ -116,8 +83,7 @@ def rig_to_ply(filepath: str, rig: Dict[str, kapture.PoseTransform], axis_length
     :param rig: rig to write
     :param axis_length: length of the axis
     """
-    with open(filepath, 'w') as f:
-        rig_to_ply_stream(f, rig, axis_length)
+    pass
 
 
 ########################################################################################################################
@@ -130,23 +96,7 @@ def trajectories_to_ply_stream(stream, trajectories: kapture.Trajectories, axis_
     :param trajectories: trajectories to write
     :param axis_length: length of the axis
     """
-    pose_list = (pose_tr
-                 for _, _, pose_tr in kapture.flatten(trajectories, is_sorted=True)
-                 if not np.any(np.isnan(pose_tr.t)))  # filter out if no position
-
-    # create 4 points per pose: 1 for center, 3 for axis
-    points_colored_list = []
-    for pose_tr in pose_list:
-        axis = get_axis_in_world(pose_device_from_world=pose_tr, length=axis_length)
-        points_colored_list += [p + AXIS_COLORS[i] for i, p in enumerate(axis.tolist())]
-
-    # write points into ply
-    header_to_ply_stream(stream, nb_vertex=len(points_colored_list))
-    hide = logger.getEffectiveLevel() >= logging.CRITICAL
-    for p3d in tqdm(points_colored_list, disable=hide):
-        line = ['{:<25}'.format(i) for i in p3d[0:3]]
-        line += ['{:<4}'.format(i) for i in p3d[3:6]]
-        stream.write(' '.join(line) + kapture_linesep)
+    pass
 
 
 def trajectories_to_ply(
@@ -164,9 +114,7 @@ def trajectories_to_ply(
     :param axis_length: length of axis representing the orientation of each pose in trajectory.
     :return:
     """
-    os.makedirs(path.dirname(filepath), exist_ok=True)
-    with open(filepath, 'w') as fout:
-        trajectories_to_ply_stream(stream=fout, trajectories=trajectories, axis_length=axis_length)
+    pass
 
 
 def points3d_to_stream(stream, points3d: kapture.Points3d) -> None:
@@ -176,11 +124,7 @@ def points3d_to_stream(stream, points3d: kapture.Points3d) -> None:
     :param stream: an open stream to write to
     :param points3d: 3d points to write
     """
-    header_to_ply_stream(stream, nb_vertex=len(points3d))
-    hide = logger.getEffectiveLevel() >= logging.CRITICAL
-    for p3d in tqdm(points3d, disable=hide):
-        line = ['{:20}'.format(i) for i in p3d[0:3]] + ['{:03d}'.format(int(i)) for i in p3d[3:6]]
-        stream.write('  '.join(line) + kapture_linesep)
+    pass
 
 
 def points3d_to_ply(filepath: str, points3d: kapture.Points3d) -> None:
@@ -190,9 +134,7 @@ def points3d_to_ply(filepath: str, points3d: kapture.Points3d) -> None:
     :param filepath: ply file path.
     :param points3d: 3D points.
     """
-    os.makedirs(path.dirname(filepath), exist_ok=True)
-    with open(filepath, 'w') as f:
-        points3d_to_stream(f, points3d)
+    pass
 
 
 def local_points3d_to_stream(
@@ -207,15 +149,7 @@ def local_points3d_to_stream(
     :param points3d: input 3d points as a Nx3 numpy array
     :param transform_world_from_local: transformation
     """
-    # sanity check
-    if not isinstance(points3d, np.ndarray) or points3d.shape[1] != 3:
-        raise TypeError('expect 3d points as a numpy array.')
-
-    header_to_ply_stream(stream, nb_vertex=points3d.shape[0])
-    for p3d_local in points3d:
-        p3d_world = transform_world_from_local.transform_points(p3d_local)
-        line = ['{:20}'.format(i) for i in p3d_world]
-        stream.write('  '.join(line) + kapture_linesep)
+    pass
 
 
 def local_points3d_to_ply(
@@ -230,9 +164,7 @@ def local_points3d_to_ply(
     :param points3d: input 3d points as a Nx3 numpy array
     :param transform_world_from_local: transformation
     """
-    os.makedirs(path.dirname(filepath), exist_ok=True)
-    with open(filepath, 'w') as f:
-        local_points3d_to_stream(f, points3d, transform_world_from_local)
+    pass
 
 
 def image_keypoints_to_stream(stream, image_keypoints: np.array) -> None:
@@ -242,11 +174,7 @@ def image_keypoints_to_stream(stream, image_keypoints: np.array) -> None:
     :param stream: an open stream to write to
     :param image_keypoints: the image keypoints to write
     """
-    header_to_ply_stream(stream, nb_vertex=len(image_keypoints))
-    for kpt in image_keypoints:
-        coords = kpt[0:2]
-        line = ['{:20}'.format(i) for i in coords] + ['0.0'] + ['{:03d}'.format(randint(0, 255)) for _ in range(3)]
-        stream.write('  '.join(line) + kapture_linesep)
+    pass
 
 
 def image_keypoints_to_ply(ply_filepath: str, image_keypoints_filepath: str, keypoint_dtype, keypoint_dsize) -> None:
@@ -258,7 +186,4 @@ def image_keypoints_to_ply(ply_filepath: str, image_keypoints_filepath: str, key
     :param keypoint_dtype: keypoint data type
     :param keypoint_dsize: keypoint data size
     """
-    os.makedirs(path.dirname(ply_filepath), exist_ok=True)
-    image_keypoints = image_keypoints_from_file(image_keypoints_filepath, keypoint_dtype, keypoint_dsize)
-    with open(ply_filepath, 'w') as f:
-        image_keypoints_to_stream(f, image_keypoints)
+    pass

@@ -41,21 +41,21 @@ class ImageFeaturesBase(Set[str]):
         """
          :return: type name as string
         """
-        return self._tname
+        pass
 
     @property
     def dtype(self) -> type:
         """
         :return: feature type
         """
-        return self._dtype
+        pass
 
     @property
     def dsize(self) -> int:
         """
         :return: feature size
         """
-        return self._dsize
+        pass
 
     def __repr__(self):
         representation = f'{self.type_name} ({self.dtype.__name__} x {self.dsize}) = '
@@ -120,14 +120,14 @@ class Descriptors(ImageFeaturesBase):
         """
         :return: keypoints_type
         """
-        return self._keypoints_type
+        pass
 
     @property
     def metric_type(self) -> str:
         """
         :return: metric_type
         """
-        return self._metric_type
+        pass
 
     def __repr__(self):
         representation = f'{self.type_name} {self.keypoints_type} {self.metric_type}' \
@@ -181,7 +181,7 @@ class GlobalFeatures(ImageFeaturesBase):
         """
         :return: metric_type
         """
-        return self._metric_type
+        pass
 
     def __repr__(self):
         representation = f'{self.type_name} {self.metric_type} ({self.dtype.__name__} x {self.dsize}) = '

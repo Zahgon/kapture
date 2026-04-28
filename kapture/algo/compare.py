@@ -464,9 +464,7 @@ def equal_records_bluetooth(
     :param records_b: second set of records
     :return: True if they are identical, False otherwise.
     """
-    expected_type = kapture.RecordsBluetooth
-    current_function_name = inspect.getframeinfo(inspect.currentframe()).function
-    return equal_nested_dict_or_set(records_a, records_b, current_function_name, expected_type)
+    pass
 
 
 def equal_records_gnss(
@@ -494,9 +492,7 @@ def equal_records_accelerometer(
     :param records_b: second set of records
     :return: True if they are identical, False otherwise.
     """
-    expected_type = kapture.RecordsAccelerometer
-    current_function_name = inspect.getframeinfo(inspect.currentframe()).function
-    return equal_nested_dict_or_set(records_a, records_b, current_function_name, expected_type)
+    pass
 
 
 def equal_records_gyroscope(
@@ -509,9 +505,7 @@ def equal_records_gyroscope(
     :param records_b: second set of records
     :return: True if they are identical, False otherwise.
     """
-    expected_type = kapture.RecordsGyroscope
-    current_function_name = inspect.getframeinfo(inspect.currentframe()).function
-    return equal_nested_dict_or_set(records_a, records_b, current_function_name, expected_type)
+    pass
 
 
 def equal_records_magnetic(
@@ -524,9 +518,7 @@ def equal_records_magnetic(
     :param records_b: second set of records
     :return: True if they are identical, False otherwise.
     """
-    expected_type = kapture.RecordsMagnetic
-    current_function_name = inspect.getframeinfo(inspect.currentframe()).function
-    return equal_nested_dict_or_set(records_a, records_b, current_function_name, expected_type)
+    pass
 
 
 def equal_matches(

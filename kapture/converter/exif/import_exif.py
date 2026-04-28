@@ -26,11 +26,7 @@ def replace_exif_id_by_names(exif_dict: dict,
     :param tag_dict:
     :return:
     """
-    return {
-        tag_dict.get(key_id, key_id): value
-        for key_id, value in exif_dict.items()
-        if key_id in tag_dict
-    }
+    pass
 
 
 def read_exif(

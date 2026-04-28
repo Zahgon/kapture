@@ -34,7 +34,7 @@ def foreign_keys_off(database: COLMAPDatabase) -> sqlite3.dbapi2.Cursor:
     :param database: database to execute the command against
     :return: database cursor
     """
-    return database.execute("PRAGMA foreign_keys = off;")
+    pass
 
 
 def foreign_keys_on(database: COLMAPDatabase) -> sqlite3.dbapi2.Cursor:
@@ -44,7 +44,7 @@ def foreign_keys_on(database: COLMAPDatabase) -> sqlite3.dbapi2.Cursor:
     :param database: database to execute the command against
     :return: database cursor
     """
-    return database.execute("PRAGMA foreign_keys = on;")
+    pass
 
 
 def get_camera_ids_from_database(database: COLMAPDatabase) -> List[int]:
@@ -54,7 +54,7 @@ def get_camera_ids_from_database(database: COLMAPDatabase) -> List[int]:
     :param database: colmap database
     :return: list of colmap camera ids
     """
-    return [camera_id for camera_id, in database.execute('SELECT camera_id FROM cameras;')]
+    pass
 
 
 def get_images_from_database(database: COLMAPDatabase) -> List[Tuple[str, int]]:
@@ -64,12 +64,7 @@ def get_images_from_database(database: COLMAPDatabase) -> List[Tuple[str, int]]:
     :param database: colmap database
     :return: list of tuple (image_name, camera_id)
     """
-    hide_progressbar = logger.getEffectiveLevel() > logging.INFO
-    image_list = []
-    for name, camera_id \
-            in tqdm(database.execute('SELECT name, camera_id FROM images;'), disable=hide_progressbar):
-        image_list.append((name, camera_id))
-    return image_list
+    pass
 
 
 def get_keypoints_set_from_database(database: COLMAPDatabase,
@@ -82,8 +77,7 @@ def get_keypoints_set_from_database(database: COLMAPDatabase,
     :param kapture_image_name_from_colmap_id: dict colmap image_id -> kapture image_name
     :type kapture_image_name_from_colmap_id: Dict[int, str]
     """
-    return set(kapture_image_name_from_colmap_id[image_id]
-               for (image_id,) in database.execute("SELECT image_id FROM keypoints"))
+    pass
 
 
 def get_matches_set_from_database(database: COLMAPDatabase,
@@ -96,10 +90,7 @@ def get_matches_set_from_database(database: COLMAPDatabase,
     :param kapture_image_name_from_colmap_id: dict colmap image_id -> kapture image_name
     :type kapture_image_name_from_colmap_id: Dict[int, str]
     """
-    colmap_matches = (pair_id_to_image_ids(pair_id)
-                      for (pair_id,) in database.execute('SELECT pair_id FROM matches'))
-    return set((kapture_image_name_from_colmap_id[pair[0]], kapture_image_name_from_colmap_id[pair[1]])
-               for pair in colmap_matches)
+    pass
 
 
 def update_DB_cameras_and_poses(database: COLMAPDatabase,
@@ -110,58 +101,7 @@ def update_DB_cameras_and_poses(database: COLMAPDatabase,
     :param database: input/output colmap database.
     :param kapture_data: kapture to read data from
     """
-    if kapture_data.rigs:
-        raise ValueError('update_DB_cameras_and_poses does not handle rigs, please use rigs_remove_inplace before.')
-
-    # 1 - Remove foreign key constraints
-    # 2 - empty camera table
-    # 3 - insert new cameras with intrinsics
-    # 4 - update images to use new camera IDs, and add pose from trajectories
-    # 5 - Re-add foreign key constraints
-
-    # WARNING: Delete all existing cameras
-    logger.debug('Delete existing cameras in database...')
-    foreign_keys_off(database)
-    database.execute("DELETE from cameras")
-
-    logger.debug('Add cameras in database...')
-    colmap_camera_ids = {}  # to keep ID of camera in case it is different from the one we use
-    for cam_id, cam in kapture_data.sensors.items():
-        if cam.sensor_type not in kapture.ALL_CAMERA_SENSOR_TYPES:
-            continue
-        col_cam_id, width, height, params, prior_focal_length = get_colmap_camera(cam)
-
-        colmap_camera_ids[cam_id] = database.add_camera(col_cam_id,
-                                                        # image size
-                                                        width, height,
-                                                        params,
-                                                        prior_focal_length=prior_focal_length)
-
-    logger.debug('Update images table with new camera ID and pose from trajectories')
-    # compute actual camera trajectories from rig trajectories
-
-    images_cam_ts = {image_path: (ts, cam_id)
-                     for ts, shot in kapture_data.records_camera.items()
-                     for cam_id, image_path in shot.items()}
-    logger.info('register images in database...')
-    for name, (timestamp, cam_id) in images_cam_ts.items():
-        # retrieve image pose from trajectories
-        if timestamp not in kapture_data.trajectories:
-            # no pose for that timestamp # TODO what should we do ?
-            prior_q = [0.0] * 4
-            prior_t = [0.0] * 3
-        else:
-            assert cam_id in kapture_data.trajectories[timestamp]
-            pose_tr = kapture_data.trajectories[timestamp].get(cam_id)
-            prior_q = pose_tr.r_raw
-            prior_t = pose_tr.t_raw
-
-        # Update image in DB
-        update_image(database, name, colmap_camera_ids[cam_id], prior_q=prior_q, prior_t=prior_t)
-
-    # Foreign key constraints should be OK now
-    foreign_keys_on(database)
-    database.commit()
+    pass
 
 
 def remove_camera(database: COLMAPDatabase, camera_id: int) -> None:
@@ -171,11 +111,7 @@ def remove_camera(database: COLMAPDatabase, camera_id: int) -> None:
     :param database: input/output colmap database.
     :param camera_id: identifier of camera
     """
-    try:
-        database.execute("DELETE FROM cameras WHERE camera_id = ?", (camera_id,))
-    except Exception as e:
-        logger.warning(e)
-        pass
+    pass
 
 
 def update_image(database: COLMAPDatabase,
@@ -192,14 +128,7 @@ def update_image(database: COLMAPDatabase,
     :param prior_q:
     :param prior_t:
     """
-    try:
-        database.execute(
-            "UPDATE images SET camera_id = ?, prior_qw = ?, prior_qx = ?, prior_qy = ?, prior_qz = ?, prior_tx = ?,"
-            " prior_ty = ?, prior_tz = ? WHERE name = ?",
-            (camera_id, prior_q[0], prior_q[1], prior_q[2], prior_q[3], prior_t[0], prior_t[1], prior_t[2], name))
-    except Exception as e:
-        logger.warning(e)
-        pass
+    pass
 
 
 def get_colmap_camera_ids_from_db(database: COLMAPDatabase, images: kapture.RecordsCamera) -> Dict[str, int]:
@@ -290,12 +219,7 @@ def save_match_list(kapture_matches: kapture.Matches, path_file: str) -> None:
     :param kapture_matches: path to the matches file
 
     """
-    if path.exists(path_file):
-        os.remove(path_file)
-    f = open(path_file, "w")
-    for image_path1, image_path2 in kapture_matches:
-        f.write("{} {}\n".format(image_path1, image_path2))
-    f.close()
+    pass
 
 
 def generate_priors_for_reconstruction(kapture_data: kapture.Kapture,
@@ -308,20 +232,7 @@ def generate_priors_for_reconstruction(kapture_data: kapture.Kapture,
     :param database: colmap database.
     :param path_to_priors_for_reconstruction: path to the priors file
     """
-    colmap_camera_ids = get_colmap_camera_ids_from_db(database, kapture_data.records_camera)
-    colmap_image_ids = get_colmap_image_ids_from_db(database)
-    kapture_data_copy = kapture.Kapture(sensors=kapture_data.sensors,
-                                        records_camera=kapture_data.records_camera,
-                                        trajectories=kapture_data.trajectories,
-                                        rigs=kapture_data.rigs)
-    # in priors, do not copy keypoints, points3d
-    export_to_colmap_txt(
-        path_to_priors_for_reconstruction,
-        kapture_data_copy,
-        "",  # kapture_data_copy do not have binaries so path is irrelevant
-        None,  # same for tar as above
-        colmap_camera_ids,
-        colmap_image_ids)
+    pass
 
 
 def add_cameras_to_database(sensors: kapture.Sensors, database: COLMAPDatabase) -> Dict[str, int]:
@@ -393,12 +304,7 @@ def update_images_from_list_in_colmap_format(database: COLMAPDatabase,
     :param database: colmap database.
     :param image_list: list of images information to update
     """
-    for name, cam_id, prior_q, prior_t in image_list:
-        update_image(database,
-                     name, cam_id,
-                     prior_q=prior_q,
-                     prior_t=prior_t)
-    database.commit()
+    pass
 
 
 def add_images_from_list_in_colmap_format(database: COLMAPDatabase,
@@ -433,8 +339,7 @@ def update_images_in_database_from_flatten(database: COLMAPDatabase,
     :param trajectories: trajectories for the images
     :param colmap_camera_ids: kapture camera identifier -> colmap camera identifier dictionary
     """
-    images_in_colmap_format = get_images_as_list_in_colmap_format(flatten_images, trajectories, colmap_camera_ids)
-    update_images_from_list_in_colmap_format(database, images_in_colmap_format)
+    pass
 
 
 def add_images_to_database_from_flatten(database: COLMAPDatabase,
@@ -450,9 +355,7 @@ def add_images_to_database_from_flatten(database: COLMAPDatabase,
     :param colmap_camera_ids: kapture camera identifier -> colmap camera identifier dictionary
     :return: dict mapping kapture image ids to colmap image ids.
     """
-    images_in_colmap_format = get_images_as_list_in_colmap_format(flatten_images, trajectories, colmap_camera_ids)
-    colmap_image_ids = add_images_from_list_in_colmap_format(database, images_in_colmap_format)
-    return colmap_image_ids
+    pass
 
 
 def update_images_in_database(database: COLMAPDatabase,
@@ -467,9 +370,7 @@ def update_images_in_database(database: COLMAPDatabase,
     :param trajectories: images trajectories
     :param colmap_camera_ids: kapture camera identifier -> colmap camera identifier dictionary
     """
-    images_flattened = list(images.flattened())
-    images_in_colmap_format = get_images_as_list_in_colmap_format(images_flattened, trajectories, colmap_camera_ids)
-    update_images_from_list_in_colmap_format(database, images_in_colmap_format)
+    pass
 
 
 def add_images_to_database(database: COLMAPDatabase,

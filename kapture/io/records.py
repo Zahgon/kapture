@@ -59,8 +59,7 @@ def guess_filepaths_from_filenames(
         filenames: Iterable[str]
 ):
     """ returns a generator that prepend the directory path to the given filenames."""
-    return (path_secure(path.join(dirpath, record_filename))
-            for record_filename in filenames)
+    pass
 
 
 def import_record_data_from_dir_link_dir(
@@ -173,7 +172,7 @@ def depth_maps_to_filepaths(depth_records: kapture.RecordsDepth, kapture_dirpath
     :param kapture_dirpath: top kapture directory path
     :return: images name to images file path dictionary
     """
-    return records_to_filepaths(depth_records, kapture_dirpath)
+    pass
 
 
 # depth maps IO ########################################################################################################
@@ -185,12 +184,7 @@ def depth_map_from_file(filepath: str, size: Tuple[int, int]) -> np.array:
     :param size: [width, height]
     :return: the depth map as a numpy array
     """
-    assert isinstance(size, tuple) and len(size) == 2
-    dtype = kapture.RecordsDepth.dtype
-    dsize = int(size[0] * size[1])
-    bitmap = array_from_file(filepath, dtype, dsize)
-    bitmap = bitmap.reshape((size[1], size[0]))
-    return bitmap
+    pass
 
 
 def depth_map_to_file(filepath: str, depth_map: np.array) -> None:
@@ -200,8 +194,4 @@ def depth_map_to_file(filepath: str, depth_map: np.array) -> None:
     :param filepath: file path
     :param depth_map: depth map as a numpy array
     """
-    # ensure depth maps are expected type RecordsDepth.dtype (aka float32)
-    if not depth_map.dtype == RecordsDepth.dtype:
-        logger.warning('depth maps are converted to float')
-        depth_map = depth_map.astype(RecordsDepth.dtype)
-    array_to_file(filepath, depth_map)
+    pass

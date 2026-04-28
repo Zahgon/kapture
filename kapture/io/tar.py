@@ -110,52 +110,44 @@ class TarCollection:
         """
         :return: the keypoints tar handlers
         """
-        return self._keypoints
+        pass
 
     @keypoints.setter
     def keypoints(self, keypoints: Dict[str, TarHandler]):
-        if not isinstance(keypoints, dict):
-            raise TypeError('dict of TarHandler expected')
-        self._keypoints = keypoints
+        pass
 
     @property
     def descriptors(self) -> Dict[str, TarHandler]:
         """
         :return: the descriptors tar handlers
         """
-        return self._descriptors
+        pass
 
     @descriptors.setter
     def descriptors(self, descriptors: Dict[str, TarHandler]):
-        if not isinstance(descriptors, dict):
-            raise TypeError('dict of TarHandler expected')
-        self._descriptors = descriptors
+        pass
 
     @property
     def global_features(self) -> Dict[str, TarHandler]:
         """
         :return: the global features tar handlers
         """
-        return self._global_features
+        pass
 
     @global_features.setter
     def global_features(self, global_features: Dict[str, TarHandler]):
-        if not isinstance(global_features, dict):
-            raise TypeError('dict of TarHandler expected')
-        self._global_features = global_features
+        pass
 
     @property
     def matches(self) -> Dict[str, TarHandler]:
         """
         :return: the matches tar handlers
         """
-        return self._matches
+        pass
 
     @matches.setter
     def matches(self, matches: Dict[str, TarHandler]):
-        if not isinstance(matches, dict):
-            raise TypeError('dict of TarHandler expected')
-        self._matches = matches
+        pass
 
 
 KAPTURE_TARABLE_TYPES = {

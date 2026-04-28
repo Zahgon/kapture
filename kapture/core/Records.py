@@ -135,11 +135,7 @@ class RecordsBase(Dict[int, Dict[str, T]]):
         """
         :return: the set of unique sensors identifiers in the records data
         """
-        return set(
-            sensor_id
-            for timestamp, sensors in self.items()
-            for sensor_id in sensors.keys()
-        )
+        pass
 
     def __contains__(self, key: Union[int, Tuple[int, str]]):
         if isinstance(key, tuple):

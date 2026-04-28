@@ -65,11 +65,7 @@ class Observations(Dict[int, Dict[str, List[Tuple[str, int]]]]):
         """
         Get the number of observations
         """
-        nb = 0
-        for per_feature_observations in self.values():
-            for observations_list in per_feature_observations.values():
-                nb += len(observations_list)
-        return nb
+        pass
 
     def __contains__(self, key: Union[int, Tuple[int, str]]):
         if isinstance(key, tuple):

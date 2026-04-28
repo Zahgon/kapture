@@ -50,35 +50,7 @@ def guess_feature_name_from_path(feature_path: str) -> str:
                                     dataset/global_features/apgem ;
                                     kapture_path/reconstruction/global_features/apgem ;
     """
-    feature_path_c = path.abspath(feature_path).replace('\\', '/').rstrip('/')
-    feature_path_split = feature_path_c.split('/')
-    feature_name = None
-    # if path given doesn't end with the kapture name, assume the last bit is the feature name
-    # ex dataset/local_features/r2d2
-    # ex kapture_path/reconstruction/keypoints/r2d2
-    if feature_path_split[-1] not in ['keypoints', 'descriptors', 'global_features', 'matches']:
-        feature_name = feature_path_split[-1]
-    else:
-        # path given look like it follows the kapture-localization recommendation
-        # search for the local_features; global_features keywords
-        for parent_folder_name in ['local_features', 'global_features']:
-            if feature_name is not None:
-                break
-            try:
-                indices = [i for i, x in enumerate(feature_path_split) if x == parent_folder_name]
-                if len(indices) > 0:
-                    # from last occurence to first
-                    for index in reversed(indices):
-                        # ignore if keyword is at the very end of the sequence
-                        # would happen for dataset/global_features/apgem/global_features
-                        if index + 1 < len(feature_path_split):
-                            feature_name = feature_path_split[index + 1]
-                            break
-            except Exception:
-                continue
-    if feature_name is None:
-        raise ValueError(f'failed to guess feature name from path {feature_path}')
-    return feature_name
+    pass
 
 
 # get file path for binary files in kapture ############################################################################
@@ -195,15 +167,7 @@ def features_check_dir(
     :param tar_handler: collection of preloaded tar archives
     :return: True only if all exist, false otherwise
     """
-    data_type = type(kapture_data)
-    tar_local_handler = retrieve_tar_handler_from_collection(data_type, feature_type, tar_handler)
-    file_list = features_to_filepaths(kapture_data, feature_type, kapture_dirpath, tar_local_handler).values()
-    if tar_local_handler is None:
-        all_files_exists = all(path.exists(feature_filepath) for feature_filepath in file_list)
-    else:
-        all_files_in_tar = set(list_files_in_tar(tar_local_handler, FEATURE_FILE_EXTENSION[data_type]))
-        all_files_exists = all(feature_filepath[0] in all_files_in_tar for feature_filepath in file_list)
-    return all_files_exists
+    pass
 
 
 # image_keypoints ######################################################################################################
@@ -276,7 +240,7 @@ def keypoints_check_dir(keypoints: kapture.Keypoints, keypoints_type: str, kaptu
     :param tar_handler: collection of preloaded tar archives
     :return: True if they all exist, false otherwise.
     """
-    return features_check_dir(keypoints, keypoints_type, kapture_dirpath, tar_handler)
+    pass
 
 
 # image_descriptors ####################################################################################################
@@ -351,7 +315,7 @@ def descriptors_check_dir(descriptors: kapture.Descriptors, descriptors_type: st
     :param tar_handler: collection of preloaded tar archives
     :return: True if they all exist, false otherwise.
     """
-    return features_check_dir(descriptors, descriptors_type, kapture_dirpath, tar_handler)
+    pass
 
 
 # global_features ######################################################################################################
@@ -365,10 +329,7 @@ def image_global_features_from_file(filepath: Union[str, Tuple[str, TarHandler]]
     :param dsize: number of data per keypoint
     :return: the global features
     """
-    if isinstance(filepath, str):
-        return array_from_file(filepath, dtype, dsize)
-    else:
-        return filepath[1].get_array_from_tar(filepath[0], dtype, dsize)
+    pass
 
 
 def image_global_features_to_file(filepath: Union[str, Tuple[str, TarHandler]],
@@ -379,10 +340,7 @@ def image_global_features_to_file(filepath: Union[str, Tuple[str, TarHandler]],
     :param filepath: file path
     :param image_global_descriptor: image global features
     """
-    if isinstance(filepath, str):
-        array_to_file(filepath, image_global_descriptor)
-    else:
-        filepath[1].add_array_to_tar(filepath[0], image_global_descriptor)
+    pass
 
 
 def get_global_features_fullpath(global_features_type: str,
@@ -399,8 +357,7 @@ def get_global_features_fullpath(global_features_type: str,
     :param tar_handler: collection of preloaded tar archives
     :return: full path of the global features file
     """
-    return get_features_fullpath(kapture.GlobalFeatures, global_features_type, kapture_dirpath,
-                                 image_filename, tar_handler)
+    pass
 
 
 def global_features_to_filepaths(global_features: kapture.GlobalFeatures,
@@ -417,7 +374,7 @@ def global_features_to_filepaths(global_features: kapture.GlobalFeatures,
     :param tar_handler: collection of preloaded tar archives
     :return: global features to global features file dictionary
     """
-    return features_to_filepaths(global_features, global_features_type, kapture_dirpath, tar_handler)
+    pass
 
 
 def global_features_check_dir(global_features: kapture.GlobalFeatures,
@@ -433,7 +390,7 @@ def global_features_check_dir(global_features: kapture.GlobalFeatures,
     :param tar_handler: collection of preloaded tar archives
     :return: True if they all exist, false otherwise.
     """
-    return features_check_dir(global_features, global_features_type, kapture_dirpath, tar_handler)
+    pass
 
 
 # matches ##############################################################################################################
@@ -550,11 +507,4 @@ def matches_check_dir(matches: kapture.Matches, keypoints_type: str, kapture_dir
     :param tar_handler: collection of preloaded tar archives
     :return: True if they all exist, false otherwise.
     """
-    tar_local_handler = retrieve_tar_handler_from_collection(kapture.Matches, keypoints_type, tar_handler)
-    file_list = (get_matches_fullpath(pair, keypoints_type, kapture_dirpath, tar_local_handler) for pair in matches)
-    if tar_local_handler is None:
-        all_files_exists = all(path.exists(filepath) for filepath in file_list)
-    else:
-        all_files_in_tar = set(list_files_in_tar(tar_local_handler, FEATURE_FILE_EXTENSION[kapture.Matches]))
-        all_files_exists = all(feature_filepath[0] in all_files_in_tar for feature_filepath in file_list)
-    return all_files_exists
+    pass
